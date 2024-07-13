@@ -1,0 +1,89 @@
+
+
+.grid{
+	display: grid;
+	grid-template-columns: repeat(3, 9em);
+	gap: 0.1em;
+	margin: 20px;
+}
+
+
+/* #subcell-0{
+	border-top: 3px solid black;
+	border-left: 3px solid black;
+}
+
+#subcell-1{
+	border-top: 3px solid black;
+	border-left: 3px solid black;
+	border-right: 3px solid black;
+}
+
+#subcell-2{
+	border-top: 3px solid black;
+	border-right: 3px solid black;
+}
+
+#subcell-3{
+	border-left: 3px solid black;
+	border-top: 3px solid black;
+	border-bottom: 3px solid black;
+}
+
+#subcell-4{
+	border: 3px solid black;
+}
+
+#subcell-5{
+	border-right: 3px solid black;
+	border-top: 3px solid black;
+	border-bottom: 3px solid black;
+}
+
+#subcell-6{
+	border-left: 3px solid black;
+	border-bottom: 3px solid black;
+}
+
+#subcell-7{
+	border-left: 3px solid black;
+	border-right: 3px solid black;
+	border-bottom: 3px solid black;
+}
+
+#subcell-8{
+	border-right: 3px solid black;
+	border-bottom: 3px solid black;
+} */
+
+.subcell{
+	width: 9em;
+	height: 9em;
+	display: grid;
+	grid-template-columns: repeat(3, 3em);
+	/* grid-gap: 0.25em; */
+	/* border: 1px solid black; */
+	box-shadow: inset 0 0 0 3px black;
+}
+
+.cell{
+	width: 3em;
+	height: 3em;
+	box-shadow: inset 0 0 0 1px black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.cell:nth-child(1){
+	border-left: none;
+}
+
+.cell-input{
+	text-align: center;
+	background-color: white;
+	outline: none;
+	border: none;
+	width: 2em;
+	height: 2em;
+}

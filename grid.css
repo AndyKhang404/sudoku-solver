@@ -3,12 +3,13 @@
 .grid{
 	display: grid;
 	grid-template-columns: repeat(3, 9em);
-	gap: 0.1em;
+	grid-template-rows: repeat(3, 9em);
+	gap: 0.1em; /* IDK why but this needs to be here so the grid doesn't f up */
 	margin: 20px;
 }
 
 
-/* #subcell-0{
+#subcell-0{
 	border-top: 3px solid black;
 	border-left: 3px solid black;
 }
@@ -54,7 +55,7 @@
 #subcell-8{
 	border-right: 3px solid black;
 	border-bottom: 3px solid black;
-} */
+}
 
 .subcell{
 	width: 9em;
@@ -62,8 +63,8 @@
 	display: grid;
 	grid-template-columns: repeat(3, 3em);
 	/* grid-gap: 0.25em; */
-	/* border: 1px solid black; */
-	box-shadow: inset 0 0 0 3px black;
+	/* border: 3px solid black; */
+	/* box-shadow: inset 0 0 0 3px black; */
 }
 
 .cell{
@@ -75,8 +76,8 @@
 	align-items: center;
 }
 
-.cell:nth-child(1){
-	border-left: none;
+.cell:focus-within , .cell-input:focus{
+	background-color: #cfcfcf;
 }
 
 .cell-input{

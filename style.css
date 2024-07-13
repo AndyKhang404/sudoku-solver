@@ -8,37 +8,6 @@
 	align-items: center;
 }
 
-.grid{
-	display: grid;
-	grid-template-columns: repeat(3, 9em);
-	grid-gap: 0.25em;
-	margin: 20px;
-}
-
-.subcell{
-	display: grid;
-	grid-template-columns: repeat(3, 3em);
-	grid-gap: 0.25em;
-}
-
-.cell{
-	/* background-color: #5120bb; */
-	width: 3em;
-	height: 3em;
-	border: 1px solid black;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.cell-input{
-	text-align: center;
-	background-color: white;
-	border: none;
-	width: 2em;
-	height: 2em;
-}
-
 #solve{
 	/* background-color: #5120bb; */
 	color: black;

@@ -48,7 +48,16 @@ var col = [
 ];
 
 function solveSudoku(grid) {
-	console.log(rowCheck);
+	for(i = 0; i < 9; i++) {
+		for(j = 0; j < 9; j++) {
+			rowCheck[i][j] = 1;
+			colCheck[i][j] = 1;
+			subcellCheck[i][j] = 1;
+		}
+	}
+	document.getElementById('status').innerHTML = 'Solving...';
+	document.getElementById('solve').disabled = true;
+	document.getElementById('clear').disabled = true;
 	for(i = 0; i < 81; i++) {
 		if(grid[i] != 0) {
 			rowCheck[row[i]][grid[i] - 1] = 0;
@@ -60,7 +69,12 @@ function solveSudoku(grid) {
 		for(i = 0; i < 81; i++) {
 			document.getElementById('' + i).value = grid[i];
 		}
+		document.getElementById('status').innerHTML = 'Solved';
+	} else {
+		document.getElementById('status').innerHTML = 'No solution';
 	}
+	document.getElementById('solve').disabled = false;
+	document.getElementById('clear').disabled = false;
 }
 
 function isValidMove(i, num) {
@@ -94,7 +108,6 @@ function solveSudokuBacktrack(grid){
 		i++;
 	}
 	console.log("Solved");
-	console.log(grid);
 	return true;
 }
 

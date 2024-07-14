@@ -5,113 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="grid.css">
-    <script src="script.js" defer></script>
+    <!-- <script src="script.js" defer></script> -->
     <title>Sudoku solver</title>
 </head>
 <body>
     <div class="mainpage">
         <h1>Sudoku solver</h1>
         <p>Press <code>TAB</code> to go to the next cell</p>
+        <p>Press <code>ENTER</code> to solve</p>
         <div class="maingrid">
             <div class="grid">
                 <div class="subcell" id="subcell-0">
-                    <div class="cell" id="cell-0"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-1"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-2"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-3"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-4"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-5"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-6"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-7"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-8"><input type="text" class="cell-input"></div>
+                    <div class="cell" id="cell-0"><input type="text" class="cell-input" id="0"></div>
+                    <div class="cell" id="cell-1"><input type="text" class="cell-input" id="1"></div>
+                    <div class="cell" id="cell-2"><input type="text" class="cell-input" id="2"></div>
+                    <div class="cell" id="cell-3"><input type="text" class="cell-input" id="3"></div>
+                    <div class="cell" id="cell-4"><input type="text" class="cell-input" id="4"></div>
+                    <div class="cell" id="cell-5"><input type="text" class="cell-input" id="5"></div>
+                    <div class="cell" id="cell-6"><input type="text" class="cell-input" id="6"></div>
+                    <div class="cell" id="cell-7"><input type="text" class="cell-input" id="7"></div>
+                    <div class="cell" id="cell-8"><input type="text" class="cell-input" id="8"></div>
                 </div>
                 <div class="subcell" id="subcell-1">
-                    <div class="cell" id="cell-9"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-10"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-11"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-12"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-13"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-14"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-15"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-16"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-17"><input type="text" class="cell-input"></div>
+                    <div class="cell" id="cell-9"><input type="text" class="cell-input" id="9"> </div>
+                    <div class="cell" id="cell-10"><input type="text" class="cell-input" id="10"></div>
+                    <div class="cell" id="cell-11"><input type="text" class="cell-input" id="11"></div>
+                    <div class="cell" id="cell-12"><input type="text" class="cell-input" id="12"></div>
+                    <div class="cell" id="cell-13"><input type="text" class="cell-input" id="13"></div>
+                    <div class="cell" id="cell-14"><input type="text" class="cell-input" id="14"></div>
+                    <div class="cell" id="cell-15"><input type="text" class="cell-input" id="15"></div>
+                    <div class="cell" id="cell-16"><input type="text" class="cell-input" id="16"></div>
+                    <div class="cell" id="cell-17"><input type="text" class="cell-input" id="17"></div>
                 </div>
                 <div class="subcell" id="subcell-2">
-                    <div class="cell" id="cell-18"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-19"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-20"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-21"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-22"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-23"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-24"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-25"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-26"><input type="text" class="cell-input"></div>
+                    <div class="cell" id="cell-18"><input type="text" class="cell-input" id="18"></div>
+                    <div class="cell" id="cell-19"><input type="text" class="cell-input" id="19"></div>
+                    <div class="cell" id="cell-20"><input type="text" class="cell-input" id="20"></div>
+                    <div class="cell" id="cell-21"><input type="text" class="cell-input" id="21"></div>
+                    <div class="cell" id="cell-22"><input type="text" class="cell-input" id="22"></div>
+                    <div class="cell" id="cell-23"><input type="text" class="cell-input" id="23"></div>
+                    <div class="cell" id="cell-24"><input type="text" class="cell-input" id="24"></div>
+                    <div class="cell" id="cell-25"><input type="text" class="cell-input" id="25"></div>
+                    <div class="cell" id="cell-26"><input type="text" class="cell-input" id="26"></div>
                 </div>
                 <div class="subcell" id="subcell-3">
-                    <div class="cell" id="cell-27"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-28"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-29"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-30"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-31"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-32"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-33"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-34"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-35"><input type="text" class="cell-input"></div>
+                    <div class="cell" id="cell-27"><input type="text" class="cell-input" id="27"></div>
+                    <div class="cell" id="cell-28"><input type="text" class="cell-input" id="28"></div>
+                    <div class="cell" id="cell-29"><input type="text" class="cell-input" id="29"></div>
+                    <div class="cell" id="cell-30"><input type="text" class="cell-input" id="30"></div>
+                    <div class="cell" id="cell-31"><input type="text" class="cell-input" id="31"></div>
+                    <div class="cell" id="cell-32"><input type="text" class="cell-input" id="32"></div>
+                    <div class="cell" id="cell-33"><input type="text" class="cell-input" id="33"></div>
+                    <div class="cell" id="cell-34"><input type="text" class="cell-input" id="34"></div>
+                    <div class="cell" id="cell-35"><input type="text" class="cell-input" id="35"></div>
                 </div>
                 <div class="subcell" id="subcell-4">
-                    <div class="cell" id="cell-36"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-37"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-38"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-39"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-40"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-41"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-42"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-43"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-44"><input type="text" class="cell-input"></div>    
+                    <div class="cell" id="cell-36"><input type="text" class="cell-input" id="36"></div>
+                    <div class="cell" id="cell-37"><input type="text" class="cell-input" id="37"></div>
+                    <div class="cell" id="cell-38"><input type="text" class="cell-input" id="38"></div>
+                    <div class="cell" id="cell-39"><input type="text" class="cell-input" id="39"></div>
+                    <div class="cell" id="cell-40"><input type="text" class="cell-input" id="40"></div>
+                    <div class="cell" id="cell-41"><input type="text" class="cell-input" id="41"></div>
+                    <div class="cell" id="cell-42"><input type="text" class="cell-input" id="42"></div>
+                    <div class="cell" id="cell-43"><input type="text" class="cell-input" id="43"></div>
+                    <div class="cell" id="cell-44"><input type="text" class="cell-input" id="44"></div>    
                 </div>
                 <div class="subcell" id="subcell-5">
-                    <div class="cell" id="cell-45"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-46"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-47"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-48"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-49"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-50"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-51"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-52"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-53"><input type="text" class="cell-input"></div>
+                    <div class="cell" id="cell-45"><input type="text" class="cell-input" id="45"></div>
+                    <div class="cell" id="cell-46"><input type="text" class="cell-input" id="46"></div>
+                    <div class="cell" id="cell-47"><input type="text" class="cell-input" id="47"></div>
+                    <div class="cell" id="cell-48"><input type="text" class="cell-input" id="48"></div>
+                    <div class="cell" id="cell-49"><input type="text" class="cell-input" id="49"></div>
+                    <div class="cell" id="cell-50"><input type="text" class="cell-input" id="50"></div>
+                    <div class="cell" id="cell-51"><input type="text" class="cell-input" id="51"></div>
+                    <div class="cell" id="cell-52"><input type="text" class="cell-input" id="52"></div>
+                    <div class="cell" id="cell-53"><input type="text" class="cell-input" id="53"></div>
                 </div>
                 <div class="subcell" id="subcell-6">
-                    <div class="cell" id="cell-54"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-55"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-56"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-57"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-58"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-59"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-60"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-61"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-62"><input type="text" class="cell-input"></div>
+                    <div class="cell" id="cell-54"><input type="text" class="cell-input" id="54"></div>
+                    <div class="cell" id="cell-55"><input type="text" class="cell-input" id="55"></div>
+                    <div class="cell" id="cell-56"><input type="text" class="cell-input" id="56"></div>
+                    <div class="cell" id="cell-57"><input type="text" class="cell-input" id="57"></div>
+                    <div class="cell" id="cell-58"><input type="text" class="cell-input" id="58"></div>
+                    <div class="cell" id="cell-59"><input type="text" class="cell-input" id="59"></div>
+                    <div class="cell" id="cell-60"><input type="text" class="cell-input" id="60"></div>
+                    <div class="cell" id="cell-61"><input type="text" class="cell-input" id="61"></div>
+                    <div class="cell" id="cell-62"><input type="text" class="cell-input" id="62"></div>
                 </div>
                 <div class="subcell" id="subcell-7">
-                    <div class="cell" id="cell-63"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-64"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-65"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-66"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-67"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-68"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-69"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-70"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-71"><input type="text" class="cell-input"></div>    
+                    <div class="cell" id="cell-63"><input type="text" class="cell-input" id="63"></div>
+                    <div class="cell" id="cell-64"><input type="text" class="cell-input" id="64"></div>
+                    <div class="cell" id="cell-65"><input type="text" class="cell-input" id="65"></div>
+                    <div class="cell" id="cell-66"><input type="text" class="cell-input" id="66"></div>
+                    <div class="cell" id="cell-67"><input type="text" class="cell-input" id="67"></div>
+                    <div class="cell" id="cell-68"><input type="text" class="cell-input" id="68"></div>
+                    <div class="cell" id="cell-69"><input type="text" class="cell-input" id="69"></div>
+                    <div class="cell" id="cell-70"><input type="text" class="cell-input" id="70"></div>
+                    <div class="cell" id="cell-71"><input type="text" class="cell-input" id="71"></div>    
                 </div>
                 <div class="subcell" id="subcell-8">
-                    <div class="cell" id="cell-72"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-73"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-74"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-75"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-76"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-77"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-78"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-79"><input type="text" class="cell-input"></div>
-                    <div class="cell" id="cell-80"><input type="text" class="cell-input"></div>
+                    <div class="cell" id="cell-73"><input type="text" class="cell-input" id="72"></div>
+                    <div class="cell" id="cell-74"><input type="text" class="cell-input" id="73"></div>
+                    <div class="cell" id="cell-75"><input type="text" class="cell-input" id="74"></div>
+                    <div class="cell" id="cell-76"><input type="text" class="cell-input" id="75"></div>
+                    <div class="cell" id="cell-77"><input type="text" class="cell-input" id="76"></div>
+                    <div class="cell" id="cell-78"><input type="text" class="cell-input" id="77"></div>
+                    <div class="cell" id="cell-79"><input type="text" class="cell-input" id="78"></div>
+                    <div class="cell" id="cell-80"><input type="text" class="cell-input" id="79"></div>
+                    <div class="cell" id="cell-72"><input type="text" class="cell-input" id="80"></div>
                 </div>
             </div>
         </div>

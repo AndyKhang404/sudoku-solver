@@ -4,6 +4,10 @@
 	margin: 0;
 }
 
+p{
+	margin: 0.25em 0;
+}
+
 .mainpage{
 	display: flex;
 	flex-direction: column;

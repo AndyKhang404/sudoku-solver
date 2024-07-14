@@ -56,6 +56,46 @@ function solveSudoku(grid) {
 			subcellCheck[Math.floor(i / 9)][grid[i] - 1] = 0;
 		}
 	}
+	if(solveSudokuBacktrack(grid)){
+		for(i = 0; i < 81; i++) {
+			document.getElementById('' + i).value = grid[i];
+		}
+	}
+}
+
+function isValidMove(i, num) {
+	if(rowCheck[row[i]][num - 1] == 0 || colCheck[col[i]][num - 1] == 0 || subcellCheck[Math.floor(i / 9)][num - 1] == 0) {
+		return false;
+	}
+	return true;
+}
+
+function solveSudokuBacktrack(grid){
+	var i = 0;
+	while(i < 81){
+		if(grid[i] == 0){
+			for(var j = 1; j <= 9; j++){
+				if(isValidMove(i, j)){
+					grid[i] = j;
+					rowCheck[row[i]][j - 1] = 0;
+					colCheck[col[i]][j - 1] = 0;
+					subcellCheck[Math.floor(i / 9)][j - 1] = 0;
+					if(solveSudokuBacktrack(grid)){
+						return true;
+					}
+					grid[i] = 0;
+					rowCheck[row[i]][j - 1] = 1;
+					colCheck[col[i]][j - 1] = 1;
+					subcellCheck[Math.floor(i / 9)][j - 1] = 1;
+				}
+			}
+			return false;
+		}
+		i++;
+	}
+	console.log("Solved");
+	console.log(grid);
+	return true;
 }
 
 for (var i = 0; i < 80; i++) {

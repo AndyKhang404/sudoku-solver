@@ -1,33 +1,27 @@
 var index = 0;
 
 document.getElementById('solve').addEventListener('click', function() {
-	console.log(document.getElementById('cell-0').firstChild.value);
-	document.getElementById('cell-80').firstChild.focus();
+	// console.log(document.getElementById('cell-0').firstChild.value);
+	// document.getElementById('cell-80').firstChild.focus();
 });
 
-document.addEventListener('click', function(e) {
-	let cellid = document.activeElement.parentElement.id;
-	index = cellid.split('-')[1];
-});
-
-function numberKeypress(e){
-	if (!(e.key >= 1 && e.key <= 9)) {
-		return;
+document.getElementById('clear').addEventListener('click', function() {
+	for (var i = 0; i < 81; i++) {
+		document.getElementById('' + i).value = '';
 	}
+});
+
+var allowedPatterns = /[^1-9]?$/;
+
+for (var i = 0; i < 80; i++) {
+	document.getElementById('' + i).addEventListener('focus', function(e) {
+		this.select();
+	});
+	document.getElementById('' + i).addEventListener('input', function(e) {
+		this.value = this.value.replace(allowedPatterns, '');
+	});
 }
 
-document.addEventListener('keydown', function(e) {
-	if (e.key === 'Enter') {
-		document.getElementById('solve').click();
-	} else if (e.key === 'Up') {
-		document.getElementById('cell-80').firstChild.focus();
-	} else if (e.key === 'Down') {
-		document.getElementById('cell-0').firstChild.focus();
-	} else if(e.key === 'Tab'){
-	}
-	else if (!(e.key >= 1 && e.key <= 9)) {
-		e.preventDefault();
-		e.stopPropagation();
-		return;
-	}
-});
+document.getElementById('80').addEventListener('input', function(e) {
+	this.value = this.value.replace(allowedPatterns, '');
+})

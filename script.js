@@ -15,6 +15,17 @@ class SudokuBoard {
 			}
 		}
 
+		this.initMask();
+		this.initPeers();
+	}
+
+	static fromString(str) {
+		var board = new SudokuBoard();
+		board.parseBoard(str);
+		return board;
+	}
+
+	initMask() {
 		let mask = (1<<1) | (1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7) | (1<<8) | (1<<9);
 		this.rowMask = [];
 		for (var i = 0; i < 9; i++) {
@@ -35,7 +46,9 @@ class SudokuBoard {
 				this.cellMask[i].push(mask);
 			}
 		}
+	}
 
+	initPeers() {
 		this.peers = [];
 		for(var i = 0; i < 9; i++){
 			this.peers.push([]);
@@ -80,10 +93,46 @@ class SudokuBoard {
 	parseBoard(str) {
 		for (var i = 0; i < 9; i++) {
 			for (var j = 0; j < 9; j++) {
-				if(str[i * 9 + j] == '.') {
+				if(str[i * 9 + j] == '.' || str[i * 9 + j] == '0') {
 					this.board[i][j] = 0;
 				} else {
-					this.board[i][j] = str[i * 9 + j];
+					this.board[i][j] = parseInt(str[i * 9 + j]);
+				}
+			}
+		}
+		for(var i = 0; i < 9; i++){
+			var row = (1<<1) | (1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7) | (1<<8) | (1<<9);
+			for(var j = 0; j < 9; j++){
+				if(this.board[i][j] != 0){
+					row &= ~(1<<this.board[i][j]);
+				}
+			}
+			this.rowMask[i] = row;
+		}
+		for(var i = 0; i < 9; i++){
+			var col = (1<<1) | (1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7) | (1<<8) | (1<<9);
+			for(var j = 0; j < 9; j++){
+				if(this.board[j][i] != 0){
+					col &= ~(1<<this.board[j][i]);
+				}
+			}
+			this.colMask[i] = col;
+		}
+		for(var i = 0; i < 9; i++){
+			var box = (1<<1) | (1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7) | (1<<8) | (1<<9);
+			for(var j = 0; j < 9; j++){
+				var row = Math.floor(i / 3) * 3 + Math.floor(j / 3);
+				var col = (i % 3) * 3 + (j % 3);
+				if(this.board[row][col] != 0){
+					box &= ~(1<<this.board[row][col]);
+				}
+			}
+			this.boxMask[i] = box;
+		}
+		for(var i = 0; i < 9; i++){
+			for(var j = 0; j < 9; j++){
+				if(this.board[i][j] == 0){
+					this.cellMask[i][j] = this.rowMask[i] & this.colMask[j] & this.boxMask[Math.floor(i / 3) * 3 + Math.floor(j / 3)];
 				}
 			}
 		}

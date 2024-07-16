@@ -93,64 +93,11 @@ class SudokuBoard {
 	parseBoard(str) {
 		for (var i = 0; i < 9; i++) {
 			for (var j = 0; j < 9; j++) {
-				if(str[i * 9 + j] == '.' || str[i * 9 + j] == '0') {
-					this.board[i][j] = 0;
-				} else {
-					this.board[i][j] = parseInt(str[i * 9 + j]);
+				if(str[i * 9 + j] != '.' && str[i * 9 + j] != '0') {
+					this.assign(i, j, parseInt(str[i * 9 + j]));
 				}
 			}
 		}
-		for(var i = 0; i < 9; i++){
-			var row = (1<<1) | (1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7) | (1<<8) | (1<<9);
-			for(var j = 0; j < 9; j++){
-				if(this.board[i][j] != 0){
-					row &= ~(1<<this.board[i][j]);
-				}
-			}
-			this.rowMask[i] = row;
-		}
-		for(var i = 0; i < 9; i++){
-			var col = (1<<1) | (1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7) | (1<<8) | (1<<9);
-			for(var j = 0; j < 9; j++){
-				if(this.board[j][i] != 0){
-					col &= ~(1<<this.board[j][i]);
-				}
-			}
-			this.colMask[i] = col;
-		}
-		for(var i = 0; i < 9; i++){
-			var box = (1<<1) | (1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7) | (1<<8) | (1<<9);
-			for(var j = 0; j < 9; j++){
-				var row = Math.floor(i / 3) * 3 + Math.floor(j / 3);
-				var col = (i % 3) * 3 + (j % 3);
-				if(this.board[row][col] != 0){
-					box &= ~(1<<this.board[row][col]);
-				}
-			}
-			this.boxMask[i] = box;
-		}
-		for(var i = 0; i < 9; i++){
-			for(var j = 0; j < 9; j++){
-				if(this.board[i][j] == 0){
-					this.cellMask[i][j] = this.rowMask[i] & this.colMask[j] & this.boxMask[Math.floor(i / 3) * 3 + Math.floor(j / 3)];
-				}
-			}
-		}
-	}
-
-	makeMove(row, col, num) {
-		if(this.cellMask[row][col] & (1<<num) == 0) {
-			return false;
-		}
-		this.board[row][col] = num;
-		this.rowMask[row] ^= (1<<num);
-		this.colMask[col] ^= (1<<num);
-		this.boxMask[Math.floor(row / 3) * 3 + Math.floor(col / 3)] ^= (1<<num);
-		this.cellMask[row][col] = 0;
-		this.peers[row][col].forEach(peer => {
-			this.cellMask[peer[0]][peer[1]] &= ~(1<<num);
-		});
-		return true;
 	}
 
 	bitCount(mask) {
@@ -163,7 +110,85 @@ class SudokuBoard {
 	}
 
 	// https://norvig.com/sudoku.html
-	
+
+	static cellValueLookup = {
+		2: 1,
+		4: 2,
+		8: 3,
+		16: 4,
+		32: 5,
+		64: 6,
+		128: 7,
+		256: 8,
+		512: 9,
+	}
+
+	assign(row, col, num) {
+		this.board[row][col] = num;
+		this.cellMask[row][col] = 0;
+		this.rowMask[row] &= ~(1<<num);
+		this.colMask[col] &= ~(1<<num);
+		this.boxMask[Math.floor(row / 3) * 3 + Math.floor(col / 3)] &= ~(1<<num);
+		for(var peer in this.peers[row][col]) {
+			if(this.eliminate(peer[0], peer[1], num) === false) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	eliminate(row, col, num) {
+		if(!(this.cellMask[row][col] & (1<<num))) {
+			return true;
+		}
+		this.cellMask[row][col] &= ~(1<<num);
+		// If a cell has only one possible value, eliminate that value from its peers
+		if(this.cellMask[row][col] === 0) {
+			return false; // Contradiction: removed last value
+		}
+		else if(this.bitCount(this.cellMask[row][col]) === 1) {
+			for(var peer in this.peers[row][col]) {
+				if(this.eliminate(peer[0], peer[1], this.cellValueLookup[this.cellMask[row][col]]) === false) {
+					return false;
+				}
+			}
+		}
+		// If a unit has only one possible place for a value, assign it there
+		if(this.bitCount(this.rowMask[row]) === 0){
+			return false; // Contradiction: no place for this value
+		}
+		else if(this.bitCount(this.rowMask[row]) === 1) {
+			for(var i = 0; i < 9; i++) {
+				if(this.rowMask[row] & this.cellMask[row][i]) {
+					return this.assign(row, i, this.cellValueLookup[this.rowMask[row]]);
+				}
+			}
+		}
+
+		if(this.bitCount(this.colMask[col]) === 0){
+			return false; // Contradiction: no place for this value
+		}
+		else if(this.bitCount(this.colMask[col]) === 1) {
+			for(var i = 0; i < 9; i++) {
+				if(this.colMask[col] & this.cellMask[i][col]) {
+					return this.assign(i, col, this.cellValueLookup[this.colMask[col]]);
+				}
+			}
+		}
+
+		if(this.bitCount(this.boxMask[Math.floor(row / 3) * 3 + Math.floor(col / 3)]) === 0){
+			return false; // Contradiction: no place for this value
+		}
+		else if(this.bitCount(this.boxMask[Math.floor(row / 3) * 3 + Math.floor(col / 3)]) === 1) {
+			for(var i = Math.floor(row / 3) * 3; i < Math.floor(row / 3) * 3 + 3; i++) {
+				for(var j = Math.floor(col / 3) * 3; j < Math.floor(col / 3) * 3 + 3; j++) {
+					if(this.boxMask[Math.floor(row / 3) * 3 + Math.floor(col / 3)] & this.cellMask[i][j]) {
+						return this.assign(i, j, this.cellValueLookup[this.boxMask[Math.floor(row / 3) * 3 + Math.floor(col / 3)]]);
+					}
+				}
+			}
+		}
+	}
 }
 
 var mainBoard = new SudokuBoard();

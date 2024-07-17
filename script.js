@@ -100,6 +100,7 @@ class SudokuBoard {
 			for (var j = 0; j < 9; j++) {
 				if(str[i * 9 + j] != '.' && str[i * 9 + j] != '0') {
 					var check = this.assign(i, j, parseInt(str[i * 9 + j]));
+					// console.log(check);
 				}
 			}
 		}
@@ -129,26 +130,31 @@ class SudokuBoard {
 	}
 
 	assign(row, col, num) {
+		if(this.board[row][col] === num) {
+			return true;
+		}
 		if(!(this.cellMask[row][col] & (1<<num)) || this.board[row][col] !== 0 || num < 1 || num > 9) {
 			return false;
 		}
 		this.board[row][col] = num;
-		this.cellMask[row][col] = 0;
-		this.rowMask[row] &= ~(1<<num);
-		this.colMask[col] &= ~(1<<num);
-		this.boxMask[Math.floor(row / 3) * 3 + Math.floor(col / 3)] &= ~(1<<num);
-		// console.log(this.peers[row][col]);
-		for(var i = 0; i < this.peers[row][col].length; i++) {
-			var peer = this.peers[row][col][i];
-			// console.log(i);
-			if(this.eliminate(peer[0], peer[1], num) === false) {
+		for(var num2 = 1; num2 <= 9; num2++) {
+			if(num2 === num) {
+				continue;
+			}
+			if(this.eliminate(row, col, num2) === false) {
+				// console.log(row, col, num2);
 				return false;
 			}
 		}
+		// this.cellMask[row][col] = 0;
+		// this.rowMask[row] &= ~(1<<num);
+		// this.colMask[col] &= ~(1<<num);
+		// this.boxMask[Math.floor(row / 3) * 3 + Math.floor(col / 3)] &= ~(1<<num);
 		return true;
 	}
 
 	eliminate(row, col, num) {
+		// console.log('here2',row,col,num);
 		if(!(this.cellMask[row][col] & (1<<num))) {
 			return true;
 		}
@@ -158,68 +164,61 @@ class SudokuBoard {
 			return false; // Contradiction: removed last value
 		}
 		else if(SudokuBoard.bitCount(this.cellMask[row][col]) === 1) {
+			// console.log(row,col,num);
 			for(var i = 0; i < this.peers[row][col].length; i++) {
 				var peer = this.peers[row][col][i];
 				if(this.eliminate(peer[0], peer[1], SudokuBoard.cellValueLookup[this.cellMask[row][col]]) === false) {
+					// console.log(peer,'check1');
 					return false;
 				}
 			}
 		}
+		// console.log('here',num);
 		// If a unit has only one possible place for a value, assign it there
 		var count = 0, index = -1;
-		if(this.rowMask[row] & (1<<num)) {
-			for(var i = 0; i < 9; i++) {
-				if((1<<num) & this.cellMask[row][i]) {
-					count++; index = i;
-				}
+		for(var i = 0; i < 9; i++) {
+			if((1<<num) & this.cellMask[row][i]) {
+				count++; index = i;
 			}
-			if(count === 0) {
-				return false; // Contradiction: no place for this value
-			}
-			else if(count === 1) {
-				// console.log('check1',row,index);
-				// for(var i in this.cellMask[row]) console.log(i, this.cellMask[row][i]);
-				if(this.assign(row,index,num) === false) {
-					return false;
-				}
+		}
+		if(count === 0) {
+			return false; // Contradiction: no place for this value
+		}
+		else if(count === 1) {
+			if(this.assign(row,index,num) === false) {
+				return false;
 			}
 		}
 
 		count = 0; index = -1;
-		if(this.colMask[col] & (1<<num)) {
-			for(var i = 0; i < 9; i++) {
-				if((1<<num) & this.cellMask[i][col]) {
-					count++; index = i;
-				}
+		for(var i = 0; i < 9; i++) {
+			if((1<<num) & this.cellMask[i][col]) {
+				count++; index = i;
 			}
-			if(count === 0) {
-				return false; // Contradiction: no place for this value
-			}
-			else if(count === 1) {
-				// console.log('check2');
-				if(this.assign(index, col, num) === false) {
-					return false;
-				}
+		}
+		if(count === 0) {
+			return false; // Contradiction: no place for this value
+		}
+		else if(count === 1) {
+			if(this.assign(index, col, num) === false) {
+				return false;
 			}
 		}
 
 		count = 0; index = 0; var jndex = 0;
-		if(this.boxMask[Math.floor(row / 3) * 3 + Math.floor(col / 3)] & (1<<num)) {
-			for(var i = Math.floor(row / 3) * 3; i < Math.floor(row / 3) * 3 + 3; i++) {
-				for(var j = Math.floor(col / 3) * 3; j < Math.floor(col / 3) * 3 + 3; j++) {
-					if((1<<num) & this.cellMask[i][j]) {
-						count++; index = i; jndex = j;
-					}
+		for(var i = Math.floor(row / 3) * 3; i < Math.floor(row / 3) * 3 + 3; i++) {
+			for(var j = Math.floor(col / 3) * 3; j < Math.floor(col / 3) * 3 + 3; j++) {
+				if((1<<num) & this.cellMask[i][j]) {
+					count++; index = i; jndex = j;
 				}
 			}
-			if(count === 0) {
-				return false; // Contradiction: no place for this value
-			}
-			else if(count === 1) {
-				// console.log('check3');
-				if(this.assign(index, jndex, num) === false) {
-					return false;
-				}
+		}
+		if(count === 0) {
+			return false; // Contradiction: no place for this value
+		}
+		else if(count === 1) {
+			if(this.assign(index, jndex, num) === false) {
+				return false;
 			}
 		}
 		return true;
@@ -245,20 +244,24 @@ function search(str, n){
 	var places = s.cellMask
 		.flat()
 		.map((v,i)=>({v,i}))
-		.filter(m => m.v != 0)
-		.sort((a,b) => SudokuBoard.bitCount(a.v) - SudokuBoard.bitCount(b.v))
-		.map(o => o.i);
+		.filter(m => SudokuBoard.bitCount(m.v) > 1)
+		.sort((a,b) => SudokuBoard.bitCount(a.v) - SudokuBoard.bitCount(b.v));
 	if(places.length === 0){
 		if(s.board.flat().filter(v => v != 0).length === 81){
 			return {board: s.stringify(), solved: true};
 		}
 		return {board: str, solved: false};
 	}
+	console.log(places);
 	for(var i = 0; i < places.length; i++){
-		var nums = SudokuBoard.maskToInts(s.cellMask[Math.floor(places[i] / 9)][places[i] % 9]);
-		for(var num in nums){
+		var nums = SudokuBoard.maskToInts(places[i].v);
+		for(var i = 0; i < nums.length; i++){
 			var s = SudokuBoard.fromString(str);
-			if(s.assign(Math.floor(places[i] / 9), places[i] % 9, num) === false){
+			// console.log(s.board);
+			if(s.board[Math.floor(places[i].i / 9)][places[i].i % 9] !== 0){
+				continue;
+			}
+			if(s.assign(Math.floor(places[i].i / 9), places[i].i % 9, nums[i]) === false){
 				continue;
 			}
 			var check = search(s.stringify(), (81 - s.board.flat().filter(v => v != 0).length));

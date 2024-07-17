@@ -100,13 +100,12 @@ class SudokuBoard {
 			for (var j = 0; j < 9; j++) {
 				if(str[i * 9 + j] != '.' && str[i * 9 + j] != '0') {
 					var check = this.assign(i, j, parseInt(str[i * 9 + j]));
-					console.log(check);
 				}
 			}
 		}
 	}
 
-	bitCount(mask) {
+	static bitCount(mask) {
 		let count = 0;
 		while(mask != 0) {
 			mask &= (mask - 1);
@@ -158,7 +157,7 @@ class SudokuBoard {
 		if(this.cellMask[row][col] === 0) {
 			return false; // Contradiction: removed last value
 		}
-		else if(this.bitCount(this.cellMask[row][col]) === 1) {
+		else if(SudokuBoard.bitCount(this.cellMask[row][col]) === 1) {
 			for(var i = 0; i < this.peers[row][col].length; i++) {
 				var peer = this.peers[row][col][i];
 				if(this.eliminate(peer[0], peer[1], SudokuBoard.cellValueLookup[this.cellMask[row][col]]) === false) {
@@ -225,6 +224,54 @@ class SudokuBoard {
 		}
 		return true;
 	}
+
+	static maskToInts(mask) {
+		var ints = [];
+		for(var i = 1; i <= 9; i++) {
+			if(mask & (1<<i)) {
+				ints.push(i);
+			}
+		}
+		return ints;
+	}
+}
+
+function search(str, n){
+	console.log(str, n);
+	if(n === 0){
+		return {board: str, solved: true};
+	}
+	var s = SudokuBoard.fromString(str);
+	var places = s.cellMask
+		.flat()
+		.map((v,i)=>({v,i}))
+		.filter(m => m.v != 0)
+		.sort((a,b) => SudokuBoard.bitCount(a.v) - SudokuBoard.bitCount(b.v))
+		.map(o => o.i);
+	if(places.length === 0){
+		if(s.board.flat().filter(v => v != 0).length === 81){
+			return {board: s.stringify(), solved: true};
+		}
+		return {board: str, solved: false};
+	}
+	for(var i = 0; i < places.length; i++){
+		var nums = SudokuBoard.maskToInts(s.cellMask[Math.floor(places[i] / 9)][places[i] % 9]);
+		for(var num in nums){
+			var s = SudokuBoard.fromString(str);
+			if(s.assign(Math.floor(places[i] / 9), places[i] % 9, num) === false){
+				continue;
+			}
+			var check = search(s.stringify(), (81 - s.board.flat().filter(v => v != 0).length));
+			if(check.solved){
+				return check;
+			}
+		}
+	}
+	return {board: str, solved: false};
+}
+
+function solve(str){
+	return search(str, 81 - str.replaceAll('.','0').split('').map(v => parseInt(v)).filter(v => v != 0).length);
 }
 
 var mainBoard = new SudokuBoard();

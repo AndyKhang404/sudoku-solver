@@ -235,46 +235,39 @@ class SudokuBoard {
 	}
 }
 
-function search(str, n){
-	console.log(str, n);
-	if(n === 0){
-		return {board: str, solved: true};
-	}
-	var s = SudokuBoard.fromString(str);
+var globCnt = 0;
+
+function search(stat){
+	var s = SudokuBoard.fromString(stat.str);
 	var places = s.cellMask
 		.flat()
-		.map((v,i)=>({v,i}))
-		.filter(m => SudokuBoard.bitCount(m.v) > 1)
-		.sort((a,b) => SudokuBoard.bitCount(a.v) - SudokuBoard.bitCount(b.v));
+		.map((v, i) => [i, SudokuBoard.maskToInts(v)])
+		.filter(v => v[1].length > 1)
+		.sort((a, b) => a[1].length - b[1].length)
+		.map(v => v[0]);
 	if(places.length === 0){
-		if(s.board.flat().filter(v => v != 0).length === 81){
-			return {board: s.stringify(), solved: true};
-		}
-		return {board: str, solved: false};
+		return {str: stat.str, solved: true};
 	}
-	console.log(places);
-	for(var i = 0; i < places.length; i++){
-		var nums = SudokuBoard.maskToInts(places[i].v);
-		for(var i = 0; i < nums.length; i++){
-			var s = SudokuBoard.fromString(str);
-			// console.log(s.board);
-			if(s.board[Math.floor(places[i].i / 9)][places[i].i % 9] !== 0){
-				continue;
-			}
-			if(s.assign(Math.floor(places[i].i / 9), places[i].i % 9, nums[i]) === false){
-				continue;
-			}
-			var check = search(s.stringify(), (81 - s.board.flat().filter(v => v != 0).length));
-			if(check.solved){
-				return check;
-			}
+	var ints = SudokuBoard.maskToInts(s.cellMask[Math.floor(places[0] / 9)][places[0] % 9]);
+	for(var j = 0; j < ints.length; j++){
+		var s = SudokuBoard.fromString(stat.str);
+		if(s.assign(Math.floor(places[0] / 9), places[0] % 9, ints[j]) === false){
+			continue;
+		}
+		var res = search({str: s.stringify(), solved: false});
+		if(res.solved){
+			return res;
 		}
 	}
-	return {board: str, solved: false};
+	return {str: stat.str, solved: false};
 }
 
 function solve(str){
-	return search(str, 81 - str.replaceAll('.','0').split('').map(v => parseInt(v)).filter(v => v != 0).length);
+	var s = SudokuBoard.fromString(str);
+	if(s.cellMask.flat().filter(v => SudokuBoard.bitCount(v) > 1).length === 81){
+		return {str: s.stringify(), solved: true};
+	}
+	return search({str: s.stringify(), solved: false});
 }
 
 var mainBoard = new SudokuBoard();

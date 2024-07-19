@@ -21,24 +21,15 @@ class SudokuBoard {
 
 	static fromString(str) {
 		var board = new SudokuBoard();
-		board.parseBoard(str);
+		if(board.parseBoard(str) === false) {
+			alert('Invalid sudoku');
+			throw new Error('Invalid sudoku');
+		}
 		return board;
 	}
 
 	initMask() {
 		let mask = (1<<1) | (1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7) | (1<<8) | (1<<9);
-		this.rowMask = [];
-		for (var i = 0; i < 9; i++) {
-			this.rowMask.push(mask);
-		}
-		this.colMask = [];
-		for (var i = 0; i < 9; i++) {
-			this.colMask.push(mask);
-		}
-		this.boxMask = [];
-		for (var i = 0; i < 9; i++) {
-			this.boxMask.push(mask);
-		}
 		this.cellMask = [];
 		for (var i = 0; i < 9; i++) {
 			this.cellMask.push([]);
@@ -96,14 +87,18 @@ class SudokuBoard {
 	}
 
 	parseBoard(str) {
+		if(str.length != 81) return false;
 		for (var i = 0; i < 9; i++) {
 			for (var j = 0; j < 9; j++) {
 				if(str[i * 9 + j] != '.' && str[i * 9 + j] != '0') {
 					var check = this.assign(i, j, parseInt(str[i * 9 + j]));
-					// console.log(check);
+					if(check === false) {
+						return false;
+					}
 				}
 			}
 		}
+		return true;
 	}
 
 	static bitCount(mask) {
@@ -146,10 +141,6 @@ class SudokuBoard {
 				return false;
 			}
 		}
-		// this.cellMask[row][col] = 0;
-		// this.rowMask[row] &= ~(1<<num);
-		// this.colMask[col] &= ~(1<<num);
-		// this.boxMask[Math.floor(row / 3) * 3 + Math.floor(col / 3)] &= ~(1<<num);
 		return true;
 	}
 
@@ -235,8 +226,6 @@ class SudokuBoard {
 	}
 }
 
-var globCnt = 0;
-
 function search(stat){
 	var s = SudokuBoard.fromString(stat.str);
 	var places = s.cellMask
@@ -271,114 +260,6 @@ function solve(str){
 }
 
 var mainBoard = new SudokuBoard();
-
-var rowCheck = [
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-];
-var colCheck = [
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-];
-var subcellCheck = [
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-	[1,1,1,1,1,1,1,1,1],
-];
-var row = [
-	0,0,0,1,1,1,2,2,2,0,0,0,1,1,1,2,2,2,0,0,0,1,1,1,2,2,2,
-	3,3,3,4,4,4,5,5,5,3,3,3,4,4,4,5,5,5,3,3,3,4,4,4,5,5,5,
-	6,6,6,7,7,7,8,8,8,6,6,6,7,7,7,8,8,8,6,6,6,7,7,7,8,8,8
-];
-var col = [
-	0,1,2,0,1,2,0,1,2,3,4,5,3,4,5,3,4,5,6,7,8,6,7,8,6,7,8,
-	0,1,2,0,1,2,0,1,2,3,4,5,3,4,5,3,4,5,6,7,8,6,7,8,6,7,8,
-	0,1,2,0,1,2,0,1,2,3,4,5,3,4,5,3,4,5,6,7,8,6,7,8,6,7,8
-];
-
-function solveSudoku(grid) {
-	for(i = 0; i < 9; i++) {
-		for(j = 0; j < 9; j++) {
-			rowCheck[i][j] = 1;
-			colCheck[i][j] = 1;
-			subcellCheck[i][j] = 1;
-		}
-	}
-	document.getElementById('status').innerHTML = 'Solving...';
-	document.getElementById('solve').disabled = true;
-	document.getElementById('clear').disabled = true;
-	for(i = 0; i < 81; i++) {
-		if(grid[i] != 0) {
-			rowCheck[row[i]][grid[i] - 1] = 0;
-			colCheck[col[i]][grid[i] - 1] = 0;
-			subcellCheck[Math.floor(i / 9)][grid[i] - 1] = 0;
-		}
-	}
-	if(solveSudokuBacktrack(grid)){
-		for(i = 0; i < 81; i++) {
-			document.getElementById('' + i).value = grid[i];
-		}
-		document.getElementById('status').innerHTML = 'Solved';
-	} else {
-		document.getElementById('status').innerHTML = 'No solution';
-	}
-	document.getElementById('solve').disabled = false;
-	document.getElementById('clear').disabled = false;
-}
-
-function isValidMove(i, num) {
-	if(rowCheck[row[i]][num - 1] == 0 || colCheck[col[i]][num - 1] == 0 || subcellCheck[Math.floor(i / 9)][num - 1] == 0) {
-		return false;
-	}
-	return true;
-}
-
-function solveSudokuBacktrack(grid){
-	var i = 0;
-	while(i < 81){
-		if(grid[i] == 0){
-			for(var j = 1; j <= 9; j++){
-				if(isValidMove(i, j)){
-					grid[i] = j;
-					rowCheck[row[i]][j - 1] = 0;
-					colCheck[col[i]][j - 1] = 0;
-					subcellCheck[Math.floor(i / 9)][j - 1] = 0;
-					if(solveSudokuBacktrack(grid)){
-						return true;
-					}
-					grid[i] = 0;
-					rowCheck[row[i]][j - 1] = 1;
-					colCheck[col[i]][j - 1] = 1;
-					subcellCheck[Math.floor(i / 9)][j - 1] = 1;
-				}
-			}
-			return false;
-		}
-		i++;
-	}
-	console.log("Solved");
-	return true;
-}
 
 // Event handlers
 

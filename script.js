@@ -285,24 +285,29 @@ document.getElementById('80').addEventListener('input', function(e) {
 	}
 })
 
-document.getElementById('solve').addEventListener('click', function() {
+function swapBoardStrFormat(uiBoardStr){
+	var inBoardStr = [];
 	for(var i = 0; i < 81; i++){
-		mainStr[i] = document.getElementById('' + i).value;
-	}
-	var parsedStr = mainStr.map(v => (isNaN(parseInt(v)) || v === '0') ? '.' : v);
-	var boardStr = [];
-	for(var i = 0; i < 9; i++){
-		boardStr.push(0);
+		inBoardStr.push("");
 	}
 	for(var i = 0; i < 3; i++){
 		for(var j = 0; j < 3; j++){
 			for(var k = 0; k < 3; k++){
 				for(var l = 0; l < 3; l++){
-					boardStr[i * 27 + j * 9 + k * 3 + l] = parsedStr[i * 27 + j * 3 + k * 9 + l];
+					inBoardStr[i * 27 + j * 9 + k * 3 + l] = uiBoardStr[i * 27 + j * 3 + k * 9 + l];
 				}
 			}
 		}
 	}
+	return inBoardStr;
+}
+
+document.getElementById('solve').addEventListener('click', function() {
+	for(var i = 0; i < 81; i++){
+		mainStr[i] = document.getElementById('' + i).value;
+	}
+	var parsedStr = mainStr.map(v => (isNaN(parseInt(v)) || v === '0') ? '.' : v);
+	var boardStr = swapBoardStrFormat(parsedStr);
 	var solvedObj = solve(boardStr.join(''));
 	console.log(solvedObj);
 });

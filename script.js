@@ -87,7 +87,7 @@ class SudokuBoard {
 	}
 
 	parseBoard(str) {
-		if(str.length != 81) return false;
+		if(str.length !== 81) return false;
 		for (var i = 0; i < 9; i++) {
 			for (var j = 0; j < 9; j++) {
 				if(str[i * 9 + j] != '.' && str[i * 9 + j] != '0') {
@@ -259,7 +259,10 @@ function solve(str){
 	return search({str: s.stringify(), solved: false});
 }
 
-var mainBoard = new SudokuBoard();
+var mainStr = [];
+for(var i = 0; i < 81; i++){
+	mainStr.push('');
+}
 
 // Event handlers
 
@@ -283,13 +286,25 @@ document.getElementById('80').addEventListener('input', function(e) {
 })
 
 document.getElementById('solve').addEventListener('click', function() {
-	for (var i = 0; i < 81; i++) {
-		grid[i] = parseInt(document.getElementById('' + i).value);
-		if(isNaN(grid[i])) {
-			grid[i] = 0;
+	for(var i = 0; i < 81; i++){
+		mainStr[i] = document.getElementById('' + i).value;
+	}
+	var parsedStr = mainStr.map(v => (isNaN(parseInt(v)) || v === '0') ? '.' : v);
+	var boardStr = [];
+	for(var i = 0; i < 9; i++){
+		boardStr.push(0);
+	}
+	for(var i = 0; i < 3; i++){
+		for(var j = 0; j < 3; j++){
+			for(var k = 0; k < 3; k++){
+				for(var l = 0; l < 3; l++){
+					boardStr[i * 27 + j * 9 + k * 3 + l] = parsedStr[i * 27 + j * 3 + k * 9 + l];
+				}
+			}
 		}
 	}
-	solveSudoku(grid);
+	var solvedObj = solve(boardStr.join(''));
+	console.log(solvedObj);
 });
 
 document.getElementById('clear').addEventListener('click', function() {

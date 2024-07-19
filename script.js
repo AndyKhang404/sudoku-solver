@@ -164,7 +164,6 @@ class SudokuBoard {
 				}
 			}
 		}
-		// console.log('here',num);
 		// If a unit has only one possible place for a value, assign it there
 		var count = 0, index = -1;
 		for(var i = 0; i < 9; i++) {
@@ -226,6 +225,10 @@ class SudokuBoard {
 	}
 }
 
+// Global solution counter
+var solCount = 0;
+var solObj;
+
 function search(stat){
 	var s = SudokuBoard.fromString(stat.str);
 	var places = s.cellMask
@@ -245,15 +248,23 @@ function search(stat){
 		}
 		var res = search({str: s.stringify(), solved: false});
 		if(res.solved){
-			return res;
+			solCount++;
+			solObj = res;
+			if(solCount > 1){
+				return res;
+			}
 		}
+	}
+	if(solCount === 1){
+		return solObj;
 	}
 	return {str: stat.str, solved: false};
 }
 
 function solve(str){
+	solCount = 0;
 	var s = SudokuBoard.fromString(str);
-	if(s.cellMask.flat().filter(v => SudokuBoard.bitCount(v) > 1).length === 81){
+	if(s.cellMask.flat().filter(v => SudokuBoard.bitCount(v) === 1).length === 81){
 		return {str: s.stringify(), solved: true};
 	}
 	return search({str: s.stringify(), solved: false});
@@ -309,11 +320,34 @@ document.getElementById('solve').addEventListener('click', function() {
 	var parsedStr = mainStr.map(v => (isNaN(parseInt(v)) || v === '0') ? '.' : v);
 	var boardStr = swapBoardStrFormat(parsedStr);
 	var solvedObj = solve(boardStr.join(''));
-	console.log(solvedObj);
+	if(solvedObj.solved === false){
+		alert('No solution exists');
+		return;
+	}
+	var solvedStr = swapBoardStrFormat(solvedObj.str);
+	for(var i = 0; i < 81; i++){
+		document.getElementById('' + i).value = solvedStr[i];
+	}
+	if(solCount > 1){
+		alert('Multiple solutions exist');
+	}
 });
 
 document.getElementById('clear').addEventListener('click', function() {
 	for (var i = 0; i < 81; i++) {
 		document.getElementById('' + i).value = '';
+	}
+});
+
+document.getElementById('import').addEventListener('click', function() {
+	var str = prompt('Enter an 81-character string representing the sudoku board, any characters other than 1-9 will be treated as empty:');
+	if(str.length !== 81) {
+		alert('Invalid board');
+		return;
+	}
+	var parsedStr = str.split('').map(v => (isNaN(parseInt(v)) || v === '0') ? ' ' : v).join('');
+	var uiStr = swapBoardStrFormat(parsedStr);
+	for(var i = 0; i < 81; i++){
+		document.getElementById('' + i).value = uiStr[i];
 	}
 });

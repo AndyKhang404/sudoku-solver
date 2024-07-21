@@ -341,6 +341,7 @@ document.getElementById('clear').addEventListener('click', function() {
 
 document.getElementById('import').addEventListener('click', function() {
 	var str = prompt('Enter an 81-character string representing the sudoku board, any characters other than 1-9 will be treated as empty:');
+	if(!str) return;
 	if(str.length !== 81) {
 		alert('Invalid board');
 		return;
